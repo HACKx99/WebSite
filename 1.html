@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bharat College Of Engineering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ===== Background Animation ===== */
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(-45deg, #ff4b2b, #ff416c, #1e90ff, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+      overflow: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ===== College Name Animation ===== */
+    .college-name {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 600;
+      padding: 20px 0;
+      animation: floatDown 1.5s ease-out forwards;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    @keyframes floatDown {
+      0% {
+        transform: translateY(-100px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* ===== Card Style ===== */
+    .container {
+      width: 350px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 25px;
+      border-radius: 20px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      margin-top: 80px; /* Space for college name */
+      animation: fadeIn 0.8s ease-out 0.5s both;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.9);
+      font-family: "Poppins", sans-serif;
+      transition: all 0.3s;
+    }
+
+    input:focus {
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.5);
+    }
+
+    input::placeholder {
+      color: #666;
+    }
+
+    button {
+      width: 95%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #23d5ab;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      font-family: "Poppins", sans-serif;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #1e90ff;
+      transform: scale(1.05);
+    }
+
+    p {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    a {
+      color: #ffeb3b;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* ===== Dashboard Page ===== */
+    #dashboardPage {
+      width: 90%;
+      max-width: 1200px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 30px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .dashboard-title {
+      font-size: 2rem;
+      margin: 0;
+    }
+
+    .logout-btn {
+      width: auto;
+      padding: 10px 20px;
+      background: #ff416c;
+    }
+
+    .dashboard-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .section-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      transition: all 0.3s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 200px;
+    }
+
+    .section-card:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-5px);
+    }
+
+    .section-card h3 {
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-card i {
+      font-size: 1.5rem;
+    }
+
+    .coming-soon {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .year-content {
+      display: none;
+      margin-top: 15px;
+      text-align: left;
+    }
+
+    .year-content.active {
+      display: block;
+    }
+
+    .subject-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .subject-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .subject-list li:last-child {
+      border-bottom: none;
+    }
+
+    .subject-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .subject-actions a {
+      color: white !important; /* Permanent white color for assignments and projects */
+      font-size: 0.9rem;
+    }
+
+    /* ===== Folder Content Pages ===== */
+    .folder-page {
+      width: 90%;
+      max-width: 1200px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 30px;
+    }
+
+    .folder-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .back-btn {
+      width: auto;
+      padding: 10px 20px;
+      background: #1e90ff;
+      margin-right: 10px;
+    }
+
+    .folder-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 400px;
+    }
+
+    /* ===== OTP Verification ===== */
+    .otp-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .otp-input {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .resend-otp {
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    .otp-info {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 15px 0;
+      font-size: 0.9rem;
+    }
+
+    /* ===== Success Message ===== */
+    .success-message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(35, 213, 171, 0.9);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      animation: slideInRight 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+      z-index: 100;
+    }
+
+    @keyframes slideInRight {
+      0% {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    /* ===== Responsive Design ===== */
+    @media (max-width: 768px) {
+      .dashboard-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .college-name {
+        font-size: 1.8rem;
+        padding: 15px 0;
+      }
+      
+      #dashboardPage, .folder-page {
+        width: 95%;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== College Name ===== -->
+  <div class="college-name">Bharat College Of Engineering</div>
+
+  <!-- ===== LOGIN PAGE ===== -->
+  <div class="container" id="loginPage">
+    <h2>Welcome Back</h2>
+    <input type="text" id="loginUser" placeholder="Username"><br>
+    <input type="password" id="loginPass" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+    <p>New user? <a onclick="showRegister()">Register here</a></p>
+  </div>
+
+  <!-- ===== REGISTER PAGE ===== -->
+  <div class="container hidden" id="registerPage">
+    <h2>Create Account</h2>
+    <input type="text" id="regUser" placeholder="Username"><br>
+    <input type="password" id="regPass" placeholder="Password"><br>
+    <input type="email" id="regEmail" placeholder="Email"><br>
+    <button onclick="register()">Generate OTP</button>
+    <p>Already have an account? <a onclick="showLogin()">Login here</a></p>
+  </div>
+
+  <!-- ===== OTP VERIFICATION PAGE ===== -->
+  <div class="container hidden" id="otpPage">
+    <h2>Verify OTP</h2>
+    <div class="otp-info">
+      <p><i class="fas fa-info-circle"></i> OTP has been automatically saved to your Desktop as "BCOE_OTP.txt"</p>
+      <p>Please check your Desktop folder and enter the OTP below:</p>
+    </div>
+    <div class="otp-container">
+      <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 1)">
+      <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 2)">
+      <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 3)">
+      <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 4)">
+      <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 5)">
+      <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 6)">
+    </div>
+    <button onclick="verifyOTP()">Verify OTP</button>
+    <p class="resend-otp">Didn't find the OTP file? <a onclick="resendOTP()">Generate New OTP</a></p>
+  </div>
+
+  <!-- ===== DASHBOARD PAGE ===== -->
+  <div class="container hidden" id="dashboardPage">
+    <div class="dashboard-header">
+      <h2 class="dashboard-title">Student Dashboard</h2>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="dashboard-content">
+      <!-- Study Materials Section -->
+      <div class="section-card">
+        <h3><i class="fas fa-book"></i> Study Materials</h3>
+        <p>Access assignments, projects and subject materials</p>
+        
+        <!-- 1st Year -->
+        <div class="year-content" id="firstYear">
+          <h4>1st Year</h4>
+          <ul class="subject-list">
+            <li>Maths 1 <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+            <li>Maths 2 <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+            <li>Chemistry 1 <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+            <li>Chemistry 2 <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+            <li>Physics 1 <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+            <li>Physics 2 <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+            <li>Mechanics <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+            <li>Graphics <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+          </ul>
+        </div>
+        
+        <!-- 2nd Year -->
+        <div class="year-content" id="secondYear">
+          <h4>2nd Year</h4>
+          <ul class="subject-list">
+            <li>Maths 3 <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+            <li>Maths 4 <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+            <li>Analysis of Algorithms <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+            <li>Computer Organization <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+            <li>Algorithms <div class="subject-actions"><a href="#">Assignment</a><a href="#">Projects</a></div></li>
+          </ul>
+        </div>
+        
+        <!-- 3rd Year -->
+        <div class="year-content" id="thirdYear">
+          <h4>3rd Year</h4>
+          <p>Content will be added soon</p>
+        </div>
+        
+        <!-- 4th Year -->
+        <div class="year-content" id="fourthYear">
+          <h4>4th Year</h4>
+          <p>Content will be added soon</p>
+        </div>
+        
+        <div style="margin-top: 15px;">
+          <button onclick="toggleYear('firstYear')">1st Year</button>
+          <button onclick="toggleYear('secondYear')">2nd Year</button>
+          <button onclick="toggleYear('thirdYear')">3rd Year</button>
+          <button onclick="toggleYear('fourthYear')">4th Year</button>
+        </div>
+      </div>
+      
+      <!-- Gallery Section -->
+      <div class="section-card">
+        <h3><i class="fas fa-images"></i> Gallery</h3>
+        <p>Browse through college events and memories</p>
+        <div class="coming-soon">
+          <i class="fas fa-clock"></i> Content Will Add Soon
+        </div>
+      </div>
+      
+      <!-- Sports Section -->
+      <div class="section-card">
+        <h3><i class="fas fa-running"></i> Sports</h3>
+        <p>Check out sports events and achievements</p>
+        <div class="coming-soon">
+          <i class="fas fa-clock"></i> Content Will Add Soon
+        </div>
+      </div>
+      
+      <!-- News Section -->
+      <div class="section-card">
+        <h3><i class="fas fa-newspaper"></i> News</h3>
+        <p>Latest updates and announcements</p>
+        <div class="coming-soon">
+          <i class="fas fa-clock"></i> Content Will Add Soon
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOLDER PAGES ===== -->
+  <div class="folder-page hidden" id="folderPage">
+    <div class="folder-header">
+      <div>
+        <button class="back-btn" onclick="backToDashboard()"><i class="fas fa-arrow-left"></i> Back</button>
+        <h2 class="dashboard-title" id="folderTitle">Folder Content</h2>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+    
+    <div class="folder-content" id="folderContent">
+      <div class="coming-soon" style="font-size: 1.5rem; padding: 30px;">
+        <i class="fas fa-clock" style="font-size: 3rem; margin-bottom: 20px;"></i>
+        <h3>Content Will Add Soon</h3>
+        <p>This section is currently under development</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Global Variables =====
+    let generatedOTP = '';
+    let registrationData = {};
+    let currentYear = null;
+    let currentFolder = '';
+
+    // ===== Show Register Page =====
+    function showRegister() {
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("registerPage").classList.remove("hidden");
+    }
+
+    // ===== Show Login Page =====
+    function showLogin() {
+      document.getElementById("registerPage").classList.add("hidden");
+      document.getElementById("otpPage").classList.add("hidden");
+      document.getElementById("loginPage").classList.remove("hidden");
+    }
+
+    // ===== Show OTP Page =====
+    function showOTPPage() {
+      document.getElementById("registerPage").classList.add("hidden");
+      document.getElementById("otpPage").classList.remove("hidden");
+    }
+
+    // ===== Show Dashboard =====
+    function showDashboard() {
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("folderPage").classList.add("hidden");
+      document.getElementById("dashboardPage").classList.remove("hidden");
+    }
+
+    // ===== Show Folder Page =====
+    function showFolderPage() {
+      document.getElementById("dashboardPage").classList.add("hidden");
+      document.getElementById("folderPage").classList.remove("hidden");
+    }
+
+    // ===== Show Success Message =====
+    function showSuccessMessage(message) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'success-message';
+      messageDiv.textContent = message;
+      document.body.appendChild(messageDiv);
+      
+      // Remove message after animation completes
+      setTimeout(() => {
+        messageDiv.remove();
+      }, 3000);
+    }
+
+    // ===== Save OTP to Desktop =====
+    function saveOTPToDesktop(otp, username) {
+      // Create a blob with the OTP content
+      const content = `Bharat College Of Engineering\n\nOTP for Registration\nUsername: ${username}\nOTP: ${otp}\n\nThis OTP is valid for 10 minutes.`;
+      const blob = new Blob([content], { type: 'text/plain' });
+      
+      // Create a temporary URL for the blob
+      const url = URL.createObjectURL(blob);
+      
+      // Create a temporary link to trigger download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'BCOE_OTP.txt';
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+    }
+
+    // ===== Register Function =====
+    function register() {
+      const username = document.getElementById("regUser").value;
+      const password = document.getElementById("regPass").value;
+      const email = document.getElementById("regEmail").value;
+
+      if (!username || !password || !email) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      // Simple email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("Please enter a valid email address!");
+        return;
+      }
+
+      // Store registration data
+      registrationData = { username, password, email };
+      
+      // Generate random 6-digit OTP
+      generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // Save OTP to desktop
+      saveOTPToDesktop(generatedOTP, username);
+      
+      showSuccessMessage("OTP generated and saved to Desktop!");
+      
+      setTimeout(() => {
+        showOTPPage();
+      }, 1000);
+    }
+
+    // ===== Move to Next OTP Input =====
+    function moveToNext(current, nextIndex) {
+      if (current.value.length === 1) {
+        if (nextIndex <= 6) {
+          document.querySelectorAll('.otp-input')[nextIndex - 1].focus();
+        }
+      }
+    }
+
+    // ===== Verify OTP Function =====
+    function verifyOTP() {
+      const otpInputs = document.querySelectorAll('.otp-input');
+      let enteredOTP = '';
+      
+      otpInputs.forEach(input => {
+        enteredOTP += input.value;
+      });
+      
+      if (enteredOTP === generatedOTP) {
+        // Save user data to localStorage
+        localStorage.setItem("user", JSON.stringify(registrationData));
+        
+        showSuccessMessage("Registration successful!");
+        
+        // Clear registration form
+        document.getElementById("regUser").value = "";
+        document.getElementById("regPass").value = "";
+        document.getElementById("regEmail").value = "";
+        
+        // Clear OTP inputs
+        otpInputs.forEach(input => {
+          input.value = "";
+        });
+        
+        setTimeout(() => {
+          showLogin();
+        }, 500);
+      } else {
+        alert("Invalid OTP! Please check the BCOE_OTP.txt file on your Desktop.");
+      }
+    }
+
+    // ===== Resend OTP Function =====
+    function resendOTP() {
+      // Generate new OTP
+      generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // Save new OTP to desktop
+      saveOTPToDesktop(generatedOTP, registrationData.username);
+      
+      showSuccessMessage("New OTP generated and saved to Desktop!");
+    }
+
+    // ===== Login Function =====
+    function login() {
+      const username = document.getElementById("loginUser").value;
+      const password = document.getElementById("loginPass").value;
+      const savedUser = JSON.parse(localStorage.getItem("user"));
+
+      if (!savedUser) {
+        alert("No user found. Please register first!");
+        return;
+      }
+
+      if (username === savedUser.username && password === savedUser.password) {
+        showDashboard();
+        showSuccessMessage("Login successful!");
+      } else {
+        alert("Invalid username or password!");
+      }
+    }
+
+    // ===== Logout Function =====
+    function logout() {
+      document.getElementById("dashboardPage").classList.add("hidden");
+      document.getElementById("folderPage").classList.add("hidden");
+      document.getElementById("loginPage").classList.remove("hidden");
+      showSuccessMessage("Logged out successfully!");
+      
+      // Clear the login form
+      document.getElementById("loginUser").value = "";
+      document.getElementById("loginPass").value = "";
+    }
+
+    // ===== Back to Dashboard =====
+    function backToDashboard() {
+      showDashboard();
+    }
+
+    // ===== Toggle Year Content =====
+    function toggleYear(yearId) {
+      // Hide all year contents
+      document.querySelectorAll('.year-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Show selected year content
+      document.getElementById(yearId).classList.add('active');
+    }
+
+    // ===== Open Folder Function =====
+    function openFolder(folderName) {
+      currentFolder = folderName;
+      
+      // Update folder title
+      document.getElementById('folderTitle').textContent = folderName;
+      
+      // Clear previous content
+      const folderContent = document.getElementById('folderContent');
+      folderContent.innerHTML = '';
+      
+      // Show "Content Will Add Soon" message for all folders
+      folderContent.innerHTML = `
+        <div class="coming-soon" style="font-size: 1.5rem; padding: 30px;">
+          <i class="fas fa-clock" style="font-size: 3rem; margin-bottom: 20px;"></i>
+          <h3>Content Will Add Soon</h3>
+          <p>The ${folderName} section is currently under development</p>
+          <p style="font-size: 1rem; margin-top: 15px; opacity: 0.8;">
+            <i class="fas fa-tools"></i> We're working hard to bring you amazing content!
+          </p>
+        </div>
+      `;
+      
+      showFolderPage();
+    }
+
+    // Allow form submission with Enter key
+    document.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        if (!document.getElementById("registerPage").classList.contains("hidden")) {
+          register();
+        } else if (!document.getElementById("loginPage").classList.contains("hidden")) {
+          login();
+        } else if (!document.getElementById("otpPage").classList.contains("hidden")) {
+          verifyOTP();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
