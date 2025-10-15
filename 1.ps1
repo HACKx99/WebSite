@@ -1,73 +1,61 @@
-<#
-download.ps1
-Simple GitHub downloader + optional PowerShell history cleanup
+# download_and_purge.ps1
+# Downloads 1.html from GitHub to Desktop, then forcefully deletes PSReadLine history files
+# WARNING: Destructive. This will remove files under the specified PSReadLine path.
 
-Usage:
-  PowerShell -ExecutionPolicy Bypass -File "download.ps1"            # normal run (prompts to clear history)
-  PowerShell -ExecutionPolicy Bypass -File "download.ps1" -Force    # skip confirmation (overwrites & deletes)
-  PowerShell -ExecutionPolicy Bypass -File "download.ps1" -NoPrompt # download only, no prompts about clearing history
-#>
+# --- Configuration (edit if needed) ---
+$sourceUrl = "https://raw.githubusercontent.com/HACKx99/WebSite/main/1.html"
+$desktop   = [Environment]::GetFolderPath("Desktop")
+$destFile  = Join-Path $desktop "1.html"
 
-param(
-    [switch] $Force,      # skip confirmations (use with care)
-    [switch] $NoPrompt    # do not prompt after download (will not clear history unless -Force)
-)
+# Exact path you asked for
+$psReadLinePath = "C:\Users\ME\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine"
 
-# --- Configuration ---
-$sourceUrl   = "https://raw.githubusercontent.com/HACKx99/WebSite/main/1.html"
-$desktopPath = [Environment]::GetFolderPath("Desktop")
-$destFile    = Join-Path $desktopPath "1.html"
+# Force TLS for GitHub
+try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 } catch {}
 
-# PSReadLine history file path (platform-aware via %APPDATA%)
-$psReadLineDir  = Join-Path $env:APPDATA "Microsoft\Windows\PowerShell\PSReadLine"
-$psHistoryFile  = Join-Path $psReadLineDir "ConsoleHost_history.txt"
+function Info { param($m) Write-Host "[*] $m" -ForegroundColor Cyan }
+function Ok   { param($m) Write-Host "✔ $m" -ForegroundColor Green }
+function Err  { param($m) Write-Host "✖ $m" -ForegroundColor Red }
 
-# --- Helper functions ---
-function Write-Info { param($m) Write-Host "[*] $m" -ForegroundColor Cyan }
-function Write-OK   { param($m) Write-Host "✔ $m" -ForegroundColor Green }
-function Write-Warn { param($m) Write-Host "⚠ $m" -ForegroundColor Yellow }
-function Write-Err  { param($m) Write-Host "✖ $m" -ForegroundColor Red }
-
-# --- Download file ---
+# --- Download ---
 try {
-    Write-Info "Downloading from: $sourceUrl"
+    Info "Downloading $sourceUrl -> $destFile"
     Invoke-WebRequest -Uri $sourceUrl -OutFile $destFile -ErrorAction Stop
-    Write-OK "File saved to: $destFile"
+    Ok "Downloaded to: $destFile"
 } catch {
-    Write-Err "Download failed: $($_.Exception.Message)"
+    Err "Download failed: $($_.Exception.Message)"
     exit 1
 }
 
-# --- Decide whether to clear history ---
-$shouldClear = $false
-if ($Force) {
-    $shouldClear = $true
-} elseif ($NoPrompt) {
-    $shouldClear = $false
-} else {
-    $ans = Read-Host "Do you want to clear PowerShell session history and delete PSReadLine history file? (Y/N)"
-    if ($ans -match '^[Yy]') { $shouldClear = $true } else { $shouldClear = $false }
+# --- Clear in-memory session history (best-effort) ---
+try {
+    Info "Clearing in-memory session history (Clear-History)"
+    Clear-History -ErrorAction SilentlyContinue
+    Ok "In-memory history cleared."
+} catch {
+    Err "Could not clear in-memory history: $($_.Exception.Message)"
 }
 
-if ($shouldClear) {
-    try {
-        Write-Info "Clearing in-memory session history..."
-        Clear-History -ErrorAction SilentlyContinue
-        Write-OK "Session history cleared."
+# --- Forcefully delete PSReadLine directory contents & folder ---
+try {
+    if (Test-Path -LiteralPath $psReadLinePath) {
+        Info "Forcefully removing all files and subfolders in: $psReadLinePath"
 
-        if (Test-Path $psHistoryFile) {
-            Write-Info "Deleting PSReadLine history file: $psHistoryFile"
-            Remove-Item -LiteralPath $psHistoryFile -Force -ErrorAction Stop
-            Write-OK "Deleted PSReadLine history file."
-        } else {
-            Write-Warn "No PSReadLine history file found at: $psHistoryFile"
-        }
-    } catch {
-        Write-Err "Failed to clear/delete history: $($_.Exception.Message)"
-        exit 1
+        # Remove all files and folders inside the directory (force + recurse)
+        Get-ChildItem -LiteralPath $psReadLinePath -Force -ErrorAction Stop |
+            Remove-Item -Force -Recurse -ErrorAction Stop
+
+        # Optionally remove the directory itself. Uncomment the next lines if you want the folder removed:
+        # Info "Removing the PSReadLine folder itself."
+        # Remove-Item -LiteralPath $psReadLinePath -Force -Recurse -ErrorAction Stop
+
+        Ok "Removed files under: $psReadLinePath"
+    } else {
+        Info "PSReadLine path not found: $psReadLinePath"
     }
-} else {
-    Write-Info "Skipping history cleanup."
+} catch {
+    Err "Failed to delete PSReadLine contents: $($_.Exception.Message)"
+    exit 1
 }
 
-Write-OK "Done."
+Ok "All done."
