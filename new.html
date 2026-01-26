@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXE Control Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            border: 1px solid rgba(80, 80, 120, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff2a00, #ff9500, #00ff95, #2a00ff);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #ff2a00, #ff9500, #00ff95, #2a00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(255, 42, 0, 0.3);
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 6px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            border: 1px solid rgba(80, 80, 120, 0.4);
+        }
+        
+        .control-btn {
+            padding: 16px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 220px;
+            justify-content: center;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #00a8ff, #0097e6);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 168, 255, 0.4);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 168, 255, 0.6);
+        }
+        
+        .status-btn {
+            background: linear-gradient(135deg, #00ff95, #00cc76);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 255, 149, 0.4);
+        }
+        
+        .status-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 149, 0.6);
+        }
+        
+        .console-container {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.85);
+            border-radius: 15px;
+            border: 1px solid rgba(80, 80, 120, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+        
+        .console-header {
+            background: rgba(20, 20, 35, 0.9);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(80, 80, 120, 0.5);
+        }
+        
+        .console-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: #00ff95;
+        }
+        
+        .console-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .console-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .close-btn {
+            background-color: #ff5f57;
+        }
+        
+        .minimize-btn {
+            background-color: #ffbd2e;
+        }
+        
+        .maximize-btn {
+            background-color: #28ca42;
+        }
+        
+        .console-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .console-output {
+            min-height: 300px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .console-line {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .prompt {
+            color: #00ff95;
+            margin-right: 10px;
+            font-weight: bold;
+            min-width: 150px;
+        }
+        
+        .timestamp {
+            color: #888;
+            font-size: 0.9rem;
+            margin-right: 15px;
+            min-width: 120px;
+        }
+        
+        .message {
+            color: #e0e0e0;
+        }
+        
+        .error {
+            color: #ff5555;
+        }
+        
+        .success {
+            color: #00ff95;
+        }
+        
+        .info {
+            color: #55aaff;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(80, 80, 120, 0.3);
+        }
+        
+        .blink {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .control-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .console-body {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-terminal"></i> EXE Control Panel</h1>
+            <p class="subtitle">Remote execution and monitoring interface</p>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Server: localhost:8080</span>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn download-btn" onclick="sendCommand('DOWNLOAD')">
+                <i class="fas fa-download"></i> Download File
+            </button>
+            <button class="control-btn status-btn" onclick="sendCommand('STATUS')">
+                <i class="fas fa-server"></i> Check Status
+            </button>
+        </div>
+        
+        <div class="console-container">
+            <div class="console-header">
+                <div class="console-title">
+                    <i class="fas fa-terminal"></i> Console Output
+                </div>
+                <div class="console-controls">
+                    <div class="console-btn close-btn"></div>
+                    <div class="console-btn minimize-btn"></div>
+                    <div class="console-btn maximize-btn"></div>
+                </div>
+            </div>
+            
+            <div class="console-body">
+                <div id="console-output" class="console-output">
+                    <div class="console-line">
+                        <span class="timestamp">[2023-10-15 14:30:22]</span>
+                        <span class="prompt">EXE Control Panel ></span>
+                        <span class="message info">System initialized. Ready for commands.</span>
+                    </div>
+                    <div class="console-line">
+                        <span class="timestamp">[2023-10-15 14:30:25]</span>
+                        <span class="prompt">EXE Control Panel ></span>
+                        <span class="message">Type 'HELP' for available commands or use the control buttons above.</span>
+                    </div>
+                    <div class="console-line">
+                        <span class="timestamp">[2023-10-15 14:30:30]</span>
+                        <span class="prompt">EXE Control Panel ></span>
+                        <span class="message">Server connection: <span class="success">localhost:8080</span></span>
+                    </div>
+                    <div class="console-line">
+                        <span class="timestamp" id="current-time">[2023-10-15 14:30:35]</span>
+                        <span class="prompt">EXE Control Panel ></span>
+                        <span class="message">Awaiting command<span class="blink">_</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>EXE Control Panel v2.1 | Secure Connection Established | Last Updated: Today</p>
+        </div>
+    </div>
+
+    <script>
+        // Update timestamp in real-time
+        function updateTimestamp() {
+            const now = new Date();
+            const timestamp = `[${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}]`;
+            document.getElementById('current-time').textContent = timestamp;
+        }
+        
+        // Update timestamp every second
+        setInterval(updateTimestamp, 1000);
+        
+        // Console output management
+        const consoleOutput = document.getElementById('console-output');
+        
+        function addConsoleLine(prompt, message, type = 'message') {
+            const now = new Date();
+            const timestamp = `[${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}]`;
+            
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            line.innerHTML = `
+                <span class="timestamp">${timestamp}</span>
+                <span class="prompt">${prompt}</span>
+                <span class="message ${type}">${message}</span>
+            `;
+            
+            consoleOutput.appendChild(line);
+            
+            // Scroll to bottom
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            
+            // Update awaiting command line
+            const awaitingLine = consoleOutput.querySelector('.blink').closest('.console-line');
+            if (awaitingLine) {
+                awaitingLine.remove();
+                addAwaitingCommandLine();
+            }
+        }
+        
+        function addAwaitingCommandLine() {
+            const now = new Date();
+            const timestamp = `[${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}]`;
+            
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            line.innerHTML = `
+                <span class="timestamp">${timestamp}</span>
+                <span class="prompt">EXE Control Panel ></span>
+                <span class="message">Awaiting command<span class="blink">_</span></span>
+            `;
+            
+            consoleOutput.appendChild(line);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        // Command sending function
+        function sendCommand(cmd) {
+            const cmdName = cmd === 'DOWNLOAD' ? 'DOWNLOAD_FILE' : 'CHECK_STATUS';
+            const promptText = cmd === 'DOWNLOAD' ? 'DOWNLOAD CMD >' : 'STATUS CMD >';
+            
+            addConsoleLine(promptText, `Sending command: ${cmdName}`, 'info');
+            
+            // Simulate a small delay for realism
+            setTimeout(() => {
+                fetch("http://localhost:8080/" + cmd)
+                    .then(r => {
+                        if (!r.ok) throw new Error('Network response was not ok');
+                        return r.text();
+                    })
+                    .then(t => {
+                        addConsoleLine('SERVER RESPONSE >', `Command ${cmdName} executed successfully: ${t}`, 'success');
+                    })
+                    .catch(e => {
+                        addConsoleLine('SERVER RESPONSE >', `❌ EXE not running or connection refused`, 'error');
+                        console.error('Error:', e);
+                    });
+            }, 800);
+        }
+        
+        // Add some initial console messages
+        window.addEventListener('DOMContentLoaded', () => {
+            // Update timestamp immediately
+            updateTimestamp();
+            
+            // Simulate initial connection check
+            setTimeout(() => {
+                addConsoleLine('SYSTEM >', 'Checking connection to localhost:8080...', 'info');
+                
+                setTimeout(() => {
+                    addConsoleLine('SYSTEM >', 'Connection test completed. Server is reachable.', 'success');
+                }, 600);
+            }, 1200);
+        });
+        
+        // Console control buttons
+        document.querySelector('.close-btn').addEventListener('click', function() {
+            addConsoleLine('SYSTEM >', 'Console close command received. (Note: This is a simulation)', 'info');
+        });
+        
+        document.querySelector('.minimize-btn').addEventListener('click', function() {
+            addConsoleLine('SYSTEM >', 'Console minimized. (Note: This is a simulation)', 'info');
+        });
+        
+        document.querySelector('.maximize-btn').addEventListener('click', function() {
+            addConsoleLine('SYSTEM >', 'Console maximized. (Note: This is a simulation)', 'info');
+        });
+    </script>
+</body>
+</html>
